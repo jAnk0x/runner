@@ -3,8 +3,8 @@ import sys
 from variables import window_width, window_height, g, ground_level
 import variables
 from player import Player
-from ground import Ground
 from obstacle import Obstacle
+from props import Prop, Ground, Background
 pygame.init()
 
 GREEN = (20, 255, 140)
@@ -16,7 +16,7 @@ PURPLE = (255, 0, 255)
 
 window = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption("Runner")
-fps = pygame.time.Clock()
+clock = pygame.time.Clock()
 
 
 sprites = pygame.sprite.Group()
@@ -25,8 +25,11 @@ player.rect.x = 400
 player.rect.bottom = ground_level
 sprites.add(player)
 
-ground = Ground(window_width, window_height - ground_level)
-sprites.add(ground)
+props = []
+ground = Ground()
+backgound = Background(4)
+props.append(backgound)
+props.append(ground)
 
 obstacle = Obstacle(20, 100)
 sprites.add(obstacle)
@@ -63,7 +66,7 @@ def game_over():
             main_game()
 
         pygame.display.update()
-        fps.tick(15)
+        clock.tick(15)
 
 
 def main_game():
@@ -75,12 +78,17 @@ def main_game():
                 quit()
 
         window.fill(pygame.Color(225, 225, 225))
+
+        for prop in props:
+            prop.draw(window)
+            prop.update()
+
         update_score()
 
-        #pygame.draw.rect(window, RED, player.rect)
+        # pygame.draw.rect(window, RED, player.rect)
         sprites.update()
-        if player.check_collision(obstacle):
-            game_over()
+        # if player.check_collision(obstacle):
+        #    game_over()
 
         keys = pygame.key.get_pressed()
         if keys[pygame.K_UP]:
@@ -89,7 +97,8 @@ def main_game():
         sprites.draw(window)
 
         pygame.display.flip()
-        fps.tick(60)
+        clock.tick(60)
+        # pygame.time.delay(5)
 
 
 main_game()

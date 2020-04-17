@@ -8,7 +8,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
 
-        self.sheet = pygame.image.load("run.png")
+        self.sheet = pygame.image.load("run.png").convert_alpha()
         self.frames = []
         self.create_frames()
 
