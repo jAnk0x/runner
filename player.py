@@ -36,12 +36,17 @@ class Player(pygame.sprite.Sprite):
         self.image = self.frames[math.trunc(self.frame)]
 
     def jump(self):
-        if not self.flying:
-            self.velocityY = 22
-            self.flying = True
+        # if not self.flying:
+        self.velocityY = 15
+        self.flying = True
 
     def check_collision(self, sprite):
-        return pygame.sprite.collide_rect(self, sprite)
+        if hasattr(sprite, 'rect'):
+            return pygame.sprite.collide_rect(self, sprite)
+        else:
+            for rect in sprite.rects:
+                if self.rect.colliderect(rect):
+                    return True
 
     def update(self):
         self.rect.bottom -= self.velocityY
@@ -52,3 +57,11 @@ class Player(pygame.sprite.Sprite):
             self.flying = False
         elif self.rect.y < ground_level:
             self.velocityY += g
+            if self.rect.top < 0:
+                self.rect.top = 0
+
+    def reset(self):
+        self.rect.bottom = ground_level
+
+    def draw(self, window):
+        window.blit(self.image, self.rect)
